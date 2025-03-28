@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A professional academic excellence tracker for managing student data, leaderboards, and performance analytics.">
+    <meta name="author" content="Vishnu K, Revanth M, Siddharth P, P Yukthesh, Vishwamohan SN">
+    <title>Academic Excellence Tracker</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://img.icons8.com/?size=100&id=12122&format=png&color=000000">
+    <!-- External Fonts and Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Embedded CSS -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #f4f7fc;
+            color: #333;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        body.dark-mode {
+            background: #1a202c;
+            color: #e2e8f0;
+        }
+
+        /* Header */
+        header {
+            background: #ffffff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        body.dark-mode header {
+            background: #2d3748;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1a73e8;
+        }
+
+        body.dark-mode header h1 {
+            color: #63b3ed;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        #dark-mode-toggle {
+            padding: 8px 16px;
+            background: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        #dark-mode-toggle:hover {
+            background: #1557b0;
+            transform: translateY(-1px);
+        }
+
+        body.dark-mode #dark-mode-toggle {
+            background: #63b3ed;
+        }
+
+        body.dark-mode #dark-mode-toggle:hover {
+            background: #4299e1;
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: fadeIn 0.5s ease forwards;
+            opacity: 0;
+            animation-delay: calc(var(--delay) * 0.2s);
+        }
+
+        body.dark-mode .card {
+            background: #2d3748;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card:nth-child(1) { --delay: 1; }
+        .card:nth-child(2) { --delay: 2; }
+        .card:nth-child(3) { --delay: 3; }
+        .card:nth-child(4) { --delay: 4; }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode .card:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .card h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #1a73e8;
+            margin-bottom: 20px;
+        }
+
+        body.dark-mode .card h2 {
+            color: #63b3ed;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: background 0.3s, transform 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #1a73e8;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1557b0;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4a5568;
+            transform: translateY(-1px);
+        }
+
+        body.dark-mode .btn-primary {
+            background: #63b3ed;
+        }
+
+        body.dark-mode .btn-primary:hover {
+            background: #4299e1;
+        }
+
+        body.dark-mode .btn-secondary {
+            background: #a0aec0;
+        }
+
+        body.dark-mode .btn-secondary:hover {
+            background: #7f8ea3;
+        }
+
+        /* Inputs and Selects */
+        input, select {
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            width: 100%;
+            font-size: 0.95rem;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: #1a73e8;
+            outline: none;
+        }
+
+        body.dark-mode input, body.dark-mode select {
+            background: #4a5568;
+            color: #e2e8f0;
+            border-color: #718096;
+        }
+
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: zoomIn 0.3s ease;
+        }
+
+        body.dark-mode .modal-content {
+            background: #2d3748;
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.95);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6b7280;
+            transition: color 0.3s;
+        }
+
+        .close:hover {
+            color: #e53e3e;
+        }
+
+        body.dark-mode .close {
+            color: #a0aec0;
+        }
+
+        body.dark-mode .close:hover {
+            color: #f56565;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        body.dark-mode th, body.dark-mode td {
+            border-bottom: 1px solid #4a5568;
+        }
+
+        th {
+            background: #f7fafc;
+            font-weight: 600;
+            color: #1a73e8;
+        }
+
+        body.dark-mode th {
+            background: #4a5568;
+            color: #63b3ed;
+        }
+
+        tr {
+            transition: background 0.2s;
+        }
+
+        tr:hover {
+            background: #f7fafc;
+        }
+
+        body.dark-mode tr:hover {
+            background: #4a5568;
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            color: #6b7280;
+            font-size: 0.9rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        body.dark-mode footer {
+            color: #a0aec0;
+            border-top: 1px solid #4a5568;
+        }
+
+        footer a {
+            color: #1a73e8;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        footer a:hover {
+            color: #1557b0;
+        }
+
+        body.dark-mode footer a {
+            color: #63b3ed;
+        }
+
+        body.dark-mode footer a:hover {
+            color: #4299e1;
+        }
+
+        /* Spinner */
+        .spinner {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            color: #1a73e8;
+            z-index: 2000;
+        }
+
+        body.dark-mode .spinner {
+            color: #63b3ed;
+        }
+
+        .spinner.active {
+            display: block;
+        }
+
+        /* Form Labels */
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #4a5568;
+        }
+
+        body.dark-mode label {
+            color: #e2e8f0;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 6px;
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 500;
+            z-index: 2000;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification.success {
+            background: #48bb78;
+        }
+
+        .notification.error {
+            background: #f56565;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            header h1 {
+                font-size: 1.3rem;
+            }
+
+            main {
+                padding: 0 10px;
+                margin: 20px auto;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .btn {
+                padding: 8px 16px;
+            }
+
+            .modal-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" class="spinner">
+        <i class="fas fa-spinner fa-spin"></i>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <h1>Academic Excellence Tracker</h1>
+        <div class="header-actions">
+            <button id="dark-mode-toggle">Dark Mode</button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Import Data -->
+        <section class="card">
+            <h2>Import Data</h2>
+            <input type="file" id="excel-file" accept=".csv" style="display: none;">
+            <button class="btn btn-primary" onclick="document.getElementById('excel-file').click();"><i class="fas fa-upload"></i> Upload CSV File</button>
+            <button class="btn btn-secondary" onclick="openModal('file-format-modal')"><i class="fas fa-eye"></i> View File Format</button>
+        </section>
+
+        <!-- Quick Search -->
+        <section class="card">
+            <h2>Quick Search</h2>
+            <input type="text" id="search-input" placeholder="Enter USN, Name, or Branch">
+            <button class="btn btn-secondary" onclick="searchStudent()"><i class="fas fa-search"></i> Search</button>
+        </section>
+
+        <!-- Manage Students -->
+        <section class="card">
+            <h2>Manage Students</h2>
+            <button class="btn btn-primary" onclick="openModal('add-student-modal')"><i class="fas fa-user-plus"></i> Add Student</button>
+            <button class="btn btn-secondary" onclick="openModal('leaderboard-modal'); loadLeaderboard();"><i class="fas fa-trophy"></i> Leaderboard</button>
+        </section>
+
+        <!-- Dashboard -->
+        <section class="card">
+            <h2>Dashboard</h2>
+            <canvas id="score-chart"></canvas>
+        </section>
+    </main>
+
+    <!-- Modals -->
+    <!-- File Format Modal -->
+    <div id="file-format-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('file-format-modal')">×</span>
+            <h2>CSV File Format</h2>
+            <p>Ensure your CSV file follows this format. You can download a sample file below.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>USN</th>
+                        <th>Name</th>
+                        <th>Year & Sem</th>
+                        <th>Section</th>
+                        <th>Branch</th>
+                        <th>CIA-1</th>
+                        <th>CIA-2</th>
+                        <th>CIA-3</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1MS21CS001</td>
+                        <td>John Doe</td>
+                        <td>2nd Year, 4th Sem</td>
+                        <td>A</td>
+                        <td>CSE</td>
+                        <td>85</td>
+                        <td>90</td>
+                        <td>88</td>
+                    </tr>
+                </tbody>
+            </table>
+            <button class="btn btn-primary" style="margin-top: 20px;" onclick="downloadSampleCSV()"><i class="fas fa-download"></i> Download Sample CSV</button>
+        </div>
+    </div>
+
+    <!-- Add Student Modal -->
+    <div id="add-student-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('add-student-modal')">×</span>
+            <h2>Add New Student</h2>
+            <form id="add-student-form">
+                <label>USN: <input type="text" name="usn" required></label>
+                <label>Name: <input type="text" name="name" required></label>
+                <label>Year & Sem: <input type="text" name="year-sem" required></label>
+                <label>Section: <input type="text" name="section" required></label>
+                <label>Branch: <input type="text" name="branch" required></label>
+                <label>CIA-1: <input type="number" name="cia1" min="0" max="100"></label>
+                <label>CIA-2: <input type="number" name="cia2" min="0" max="100"></label>
+                <label>CIA-3: <input type="number" name="cia3" min="0" max="100"></label>
+                <button type="submit" class="btn btn-primary">Add Student</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('add-student-modal')">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Leaderboard Modal -->
+    <div id="leaderboard-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('leaderboard-modal')">×</span>
+            <h2>Student Leaderboard</h2>
+            <div class="filters">
+                <select id="branch-filter">
+                    <option value="">All Branches</option>
+                    <option value="CSE">CSE</option>
+                    <option value="ECE">ECE</option>
+                </select>
+                <select id="year-sem-filter">
+                    <option value="">All Years & Semesters</option>
+                    <option value="2nd Year, 4th Sem">2nd Year, 4th Sem</option>
+                </select>
+                <select id="section-filter">
+                    <option value="">All Sections</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                </select>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Name</th>
+                        <th>USN</th>
+                        <th>Branch</th>
+                        <th>Section</th>
+                        <th>Year & Sem</th>
+                        <th>Average CIA</th>
+                        <th>Branch Rank</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboard-table">
+                    <!-- Populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 Academic Excellence Tracker. All rights reserved.</p>
+        <p>Developed by Vishnu K, Revanth M, Siddharth P, P Yukthesh, and Vishwamohan SN | <a href="https://github.com/Zorrojurro/Academic-Tracker.git" target="_blank">GitHub</a> | <a href="https://www.bnmit.in" target="_blank">BNMIT</a></p>
+    </footer>
+
+    <!-- External Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <!-- Embedded JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("DOM fully loaded and JavaScript is running");
+
+            // Notification Function
+            function showNotification(message, type) {
+                const notification = document.getElementById('notification');
+                notification.textContent = message;
+                notification.className = `notification ${type}`;
+                notification.style.display = 'block';
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 3000);
+            }
+
+            // Dark Mode Toggle
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            if (darkModeToggle) {
+                darkModeToggle.addEventListener('click', () => {
+                    console.log("Dark mode toggle clicked");
+                    document.body.classList.toggle('dark-mode');
+                    darkModeToggle.textContent = document.body.classList.contains('dark-mode') ? 'Light Mode' : 'Dark Mode';
+                });
+            } else {
+                console.error("Dark mode toggle button not found");
+            }
+
+            // Modal Functions
+            function openModal(modalId) {
+                console.log(`Opening modal: ${modalId}`);
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.style.display = 'flex';
+                } else {
+                    console.error(`Modal with ID ${modalId} not found`);
+                }
+            }
+
+            function closeModal(modalId) {
+                console.log(`Closing modal: ${modalId}`);
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.style.display = 'none';
+                } else {
+                    console.error(`Modal with ID ${modalId} not found`);
+                }
+            }
+
+            // Download Sample CSV
+            function downloadSampleCSV() {
+                console.log("Downloading sample CSV");
+                const sampleData = `USN,Name,Year & Sem,Section,Branch,CIA-1,CIA-2,CIA-3
+1MS21CS001,John Doe,2nd Year, 4th Sem,A,CSE,85,90,88`;
+                const blob = new Blob([sampleData], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'sample_students.csv';
+                a.click();
+                window.URL.revokeObjectURL(url);
+            }
+
+            // CSV File Import
+            const excelFileInput = document.getElementById('excel-file');
+            if (excelFileInput) {
+                excelFileInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (!file) {
+                        console.log("No file selected");
+                        return;
+                    }
+
+                    console.log("Uploading CSV file");
+                    showLoadingSpinner();
+                    Papa.parse(file, {
+                        header: true,
+                        skipEmptyLines: true,
+                        complete: (result) => {
+                            const students = JSON.parse(localStorage.getItem('students')) || [];
+                            let errorCount = 0;
+                            result.data.forEach((row) => {
+                                const student = {
+                                    usn: row['USN'],
+                                    name: row['Name'],
+                                    yearSem: row['Year & Sem'],
+                                    section: row['Section'],
+                                    branch: row['Branch'],
+                                    cia1: parseInt(row['CIA-1']) || 0,
+                                    cia2: parseInt(row['CIA-2']) || 0,
+                                    cia3: parseInt(row['CIA-3']) || 0,
+                                };
+                                if (student.usn && student.usn.startsWith('1MS')) {
+                                    students.push(student);
+                                } else {
+                                    errorCount++;
+                                }
+                            });
+                            localStorage.setItem('students', JSON.stringify(students));
+                            hideLoadingSpinner();
+                            if (errorCount > 0) {
+                                showNotification(`Imported ${result.data.length - errorCount} students. ${errorCount} rows failed (invalid USN).`, 'error');
+                            } else {
+                                showNotification('Data imported successfully!', 'success');
+                            }
+                            excelFileInput.value = ''; // Reset file input
+                        },
+                        error: (error) => {
+                            hideLoadingSpinner();
+                            showNotification('Error importing file: ' + error, 'error');
+                        }
+                    });
+                });
+            } else {
+                console.error("Excel file input not found");
+            }
+
+            // Add Student Form Submission
+            const addStudentForm = document.getElementById('add-student-form');
+            if (addStudentForm) {
+                addStudentForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    console.log("Add student form submitted");
+                    showLoadingSpinner();
+
+                    setTimeout(() => {
+                        const formData = new FormData(e.target);
+                        const student = {
+                            usn: formData.get('usn'),
+                            name: formData.get('name'),
+                            yearSem: formData.get('year-sem'),
+                            section: formData.get('section'),
+                            branch: formData.get('branch'),
+                            cia1: parseInt(formData.get('cia1')) || 0,
+                            cia2: parseInt(formData.get('cia2')) || 0,
+                            cia3: parseInt(formData.get('cia3')) || 0,
+                        };
+
+                        // Basic USN validation
+                        if (!student.usn.startsWith('1MS')) {
+                            hideLoadingSpinner();
+                            showNotification('USN must start with "1MS".', 'error');
+                            return;
+                        }
+
+                        // Add student to local storage
+                        const students = JSON.parse(localStorage.getItem('students')) || [];
+                        students.push(student);
+                        localStorage.setItem('students', JSON.stringify(students));
+
+                        hideLoadingSpinner();
+                        showNotification('Student added successfully!', 'success');
+                        closeModal('add-student-modal');
+                        e.target.reset();
+                    }, 1000);
+                });
+            } else {
+                console.error("Add student form not found");
+            }
+
+            // Search Function
+            function searchStudent() {
+                console.log("Search button clicked");
+                showLoadingSpinner();
+                setTimeout(() => {
+                    const query = document.getElementById('search-input').value.toLowerCase();
+                    const students = JSON.parse(localStorage.getItem('students')) || [];
+                    const results = students.filter(student =>
+                        student.usn.toLowerCase().includes(query) ||
+                        student.name.toLowerCase().includes(query) ||
+                        student.branch.toLowerCase().includes(query)
+                    );
+
+                    hideLoadingSpinner();
+                    if (results.length > 0) {
+                        showNotification('Found students:\n' + results.map(s => `${s.name} (${s.usn})`).join('\n'), 'success');
+                    } else {
+                        showNotification('No students found.', 'error');
+                    }
+                }, 1000);
+            }
+
+            // Leaderboard
+            function loadLeaderboard() {
+                console.log("Loading leaderboard");
+                const students = JSON.parse(localStorage.getItem('students')) || [];
+                const tbody = document.getElementById('leaderboard-table');
+                const branchFilter = document.getElementById('branch-filter').value;
+                const yearSemFilter = document.getElementById('year-sem-filter').value;
+                const sectionFilter = document.getElementById('section-filter').value;
+
+                if (tbody) {
+                    tbody.innerHTML = '';
+
+                    // Filter students
+                    let filteredStudents = students;
+                    if (branchFilter) {
+                        filteredStudents = filteredStudents.filter(student => student.branch === branchFilter);
+                    }
+                    if (yearSemFilter) {
+                        filteredStudents = filteredStudents.filter(student => student.yearSem === yearSemFilter);
+                    }
+                    if (sectionFilter) {
+                        filteredStudents = filteredStudents.filter(student => student.section === sectionFilter);
+                    }
+
+                    // Calculate average CIA and sort
+                    filteredStudents.forEach((student, index) => {
+                        const avgCIA = (student.cia1 + student.cia2 + student.cia3) / 3;
+                        student.avgCIA = avgCIA;
+                    });
+
+                    filteredStudents.sort((a, b) => b.avgCIA - a.avgCIA);
+
+                    // Calculate branch ranks
+                    const branchRanks = {};
+                    filteredStudents.forEach((student, index) => {
+                        if (!branchRanks[student.branch]) {
+                            branchRanks[student.branch] = [];
+                        }
+                        branchRanks[student.branch].push({ ...student, overallRank: index + 1 });
+                    });
+
+                    Object.keys(branchRanks).forEach(branch => {
+                        branchRanks[branch].sort((a, b) => b.avgCIA - a.avgCIA);
+                        branchRanks[branch].forEach((student, idx) => {
+                            student.branchRank = idx + 1;
+                        });
+                    });
+
+                    // Populate table
+                    filteredStudents.forEach((student, index) => {
+                        const row = document.createElement('tr');
+                        const branchRank = branchRanks[student.branch].find(s => s.usn === student.usn).branchRank;
+                        row.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td>${student.name}</td>
+                            <td>${student.usn}</td>
+                            <td>${student.branch}</td>
+                            <td>${student.section}</td>
+                            <td>${student.yearSem}</td>
+                            <td>${student.avgCIA.toFixed(2)}</td>
+                            <td>${branchRank}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                } else {
+                    console.error("Leaderboard table body not found");
+                }
+            }
+
+            // Add event listeners for filters
+            const filters = ['branch-filter', 'year-sem-filter', 'section-filter'];
+            filters.forEach(filterId => {
+                const filter = document.getElementById(filterId);
+                if (filter) {
+                    filter.addEventListener('change', () => {
+                        console.log(`Filter changed: ${filterId}`);
+                        loadLeaderboard();
+                    });
+                }
+            });
+
+            // Chart.js for Dashboard
+            const ctx = document.getElementById('score-chart');
+            if (ctx) {
+                console.log("Chart.js loaded, initializing chart");
+                new Chart(ctx.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['CSE', 'ECE', 'ME'],
+                        datasets: [{
+                            label: 'Average CIA Scores',
+                            data: [85, 78, 92],
+                            backgroundColor: '#1a73e8',
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        },
+                        animation: {
+                            duration: 1500,
+                            easing: 'easeInOutQuart'
+                        }
+                    }
+                });
+            } else {
+                console.error("Score chart canvas not found");
+            }
+
+            // Loading Spinner Functions
+            function showLoadingSpinner() {
+                console.log("Showing loading spinner");
+                const spinner = document.getElementById('loading-spinner');
+                if (spinner) {
+                    spinner.classList.add('active');
+                } else {
+                    console.error("Loading spinner not found");
+                }
+            }
+
+            function hideLoadingSpinner() {
+                console.log("Hiding loading spinner");
+                const spinner = document.getElementById('loading-spinner');
+                if (spinner) {
+                    spinner.classList.remove('active');
+                } else {
+                    console.error("Loading spinner not found");
+                }
+            }
+
+            // Expose functions to global scope
+            window.openModal = openModal;
+            window.closeModal = closeModal;
+            window.searchStudent = searchStudent;
+            window.loadLeaderboard = loadLeaderboard;
+            window.downloadSampleCSV = downloadSampleCSV;
+        });
+    </script>
+</body>
+</html>
