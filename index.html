@@ -452,7 +452,7 @@
                 <li><a href="#import" onclick="showSection('import')"><i class="fas fa-upload"></i> Import Data</a></li>
                 <li><a href="#search" onclick="showSection('search')"><i class="fas fa-search"></i> Search</a></li>
                 <li><a href="#manage" onclick="showSection('manage')"><i class="fas fa-users"></i> Manage</a></li>
-                <li><a href="#analytics" onclick="showSection('analytics'); loadAnalytics();"><i class="fas fa-chart-bar"></i> Analytics</a></li>
+                <li><a href="#analytics" onclick="showSection('analytics'); populateAnalyticsFilters(); loadAnalytics();"><i class="fas fa-chart-bar"></i> Analytics</a></li>
             </ul>
         </nav>
     </aside>
@@ -508,7 +508,7 @@
                 <h3>Student Management</h3>
                 <button class="btn btn-primary" onclick="openModal('add-student-modal')"><i class="fas fa-user-plus"></i> Add Student</button>
                 <button class="btn btn-secondary" onclick="openModal('leaderboard-modal'); loadLeaderboard();"><i class="fas fa-trophy"></i> Leaderboard</button>
-                <button class="btn btn-primary" onclick="downloadStudentsCSV()"><i class="fas fa-download"></i> Download CSV</button>
+                <button class="btn btn-primary" onclick="openModal('download-csv-modal'); populateFilterOptions();"><i class="fas fa-download"></i> Download CSV</button>
             </div>
         </section>
 
@@ -522,21 +522,15 @@
                 <div class="filters">
                     <select id="analytics-branch-filter">
                         <option value="">All Branches</option>
-                        <option value="CSE">CSE</option>
-                        <option value="ECE">ECE</option>
                     </select>
                     <select id="analytics-year-filter">
                         <option value="">All Years</option>
-                        <option value="2nd Year">2nd Year</option>
                     </select>
                     <select id="analytics-semester-filter">
                         <option value="">All Semesters</option>
-                        <option value="4th Sem">4th Sem</option>
                     </select>
                     <select id="analytics-section-filter">
                         <option value="">All Sections</option>
-                        <option value="A">A</option>
-                        <option value="B">B</option>
                     </select>
                     <button class="btn btn-primary" onclick="loadAnalytics()">Apply Filters</button>
                 </div>
@@ -572,7 +566,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>1MS21CS001</td>
+                            <td>1BG21CS001</td>
                             <td>John Doe</td>
                             <td>2nd Year</td>
                             <td>4th Sem</td>
@@ -596,7 +590,7 @@
                 <span class="close" onclick="closeModal('add-student-modal')">×</span>
                 <h2>Add Student</h2>
                 <form id="add-student-form">
-                    <input type="text" name="usn" placeholder="USN" required>
+                    <input type="text" name="usn" placeholder="USN (e.g., 1BG21CS001)" required>
                     <input type="text" name="name" placeholder="Name" required>
                     <input type="text" name="year" placeholder="Year (e.g., 2nd Year)" required>
                     <input type="text" name="semester" placeholder="Semester (e.g., 4th Sem)" required>
@@ -670,6 +664,28 @@
                 </div>
             </div>
         </div>
+
+        <div id="download-csv-modal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('download-csv-modal')">×</span>
+                <h2>Download Students CSV</h2>
+                <div class="filters">
+                    <select id="csv-branch-filter">
+                        <option value="">All Branches</option>
+                    </select>
+                    <select id="csv-semester-filter">
+                        <option value="">All Semesters</option>
+                    </select>
+                    <select id="csv-section-filter">
+                        <option value="">All Sections</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" onclick="downloadStudentsCSVWithFilters()"><i class="fas fa-download"></i> Download</button>
+                    <button class="btn btn-secondary" onclick="closeModal('download-csv-modal')"><i class="fas fa-arrow-left"></i> Back</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -677,8 +693,8 @@
     <script>
         // Mock Data
         let students = [
-            { usn: "1MS21CS001", name: "John Doe", year: "2nd Year", semester: "4th Sem", section: "A", branch: "CSE", cia1: 85, cia2: 90, cia3: 88 },
-            { usn: "1MS21CS002", name: "Jane Smith", year: "2nd Year", semester: "4th Sem", section: "B", branch: "CSE", cia1: 92, cia2: 88, cia3: 95 }
+            { usn: "1BG21CS001", name: "John Doe", year: "2nd Year", semester: "4th Sem", section: "A", branch: "CSE", cia1: 85, cia2: 90, cia3: 88 },
+            { usn: "1BG21CS002", name: "Jane Smith", year: "2nd Year", semester: "4th Sem", section: "B", branch: "CSE", cia1: 92, cia2: 88, cia3: 95 }
         ];
 
         let branchChart, topPerformersChart;
@@ -746,7 +762,7 @@
                     header: true,
                     skipEmptyLines: true,
                     complete: (result) => {
-                        const newStudents = result.data.filter(row => row['USN'] && row['USN'].startsWith('1MS')).map(row => ({
+                        const newStudents = result.data.filter(row => row['USN'] && row['USN'].startsWith('1BG')).map(row => ({
                             usn: row['USN'],
                             name: row['Name'],
                             year: row['Year'],
@@ -785,8 +801,8 @@
                     cia3: parseInt(formData.get('cia3')) || 0
                 };
 
-                if (!student.usn.startsWith('1MS')) {
-                    showNotification('USN must start with "1MS".', 'error');
+                if (!student.usn.startsWith('1BG')) {
+                    showNotification('USN must start with "1BG".', 'error');
                     return;
                 }
 
@@ -887,6 +903,40 @@
             );
             document.getElementById('usn-search').addEventListener('input', loadLeaderboard);
 
+            // Populate Analytics Filter Options Dynamically
+            window.populateAnalyticsFilters = () => {
+                const branchFilter = document.getElementById('analytics-branch-filter');
+                const yearFilter = document.getElementById('analytics-year-filter');
+                const semesterFilter = document.getElementById('analytics-semester-filter');
+                const sectionFilter = document.getElementById('analytics-section-filter');
+
+                // Get unique values
+                const branches = [...new Set(students.map(s => s.branch))].sort();
+                const years = [...new Set(students.map(s => s.year))].sort();
+                const semesters = [...new Set(students.map(s => s.semester))].sort();
+                const sections = [...new Set(students.map(s => s.section))].sort();
+
+                // Clear existing options except "All"
+                branchFilter.innerHTML = '<option value="">All Branches</option>';
+                yearFilter.innerHTML = '<option value="">All Years</option>';
+                semesterFilter.innerHTML = '<option value="">All Semesters</option>';
+                sectionFilter.innerHTML = '<option value="">All Sections</option>';
+
+                // Add dynamic options
+                branches.forEach(branch => {
+                    branchFilter.innerHTML += `<option value="${branch}">${branch}</option>`;
+                });
+                years.forEach(year => {
+                    yearFilter.innerHTML += `<option value="${year}">${year}</option>`;
+                });
+                semesters.forEach(semester => {
+                    semesterFilter.innerHTML += `<option value="${semester}">${semester}</option>`;
+                });
+                sections.forEach(section => {
+                    sectionFilter.innerHTML += `<option value="${section}">${section}</option>`;
+                });
+            };
+
             // Analytics
             window.loadAnalytics = () => {
                 const filters = {
@@ -963,7 +1013,7 @@
             // Sample CSV
             window.downloadSampleCSV = () => {
                 const data = `USN,Name,Year,Semester,Section,Branch,CIA-1,CIA-2,CIA-3
-1MS21CS001,John Doe,2nd Year,4th Sem,A,CSE,85,90,88`;
+1BG21CS001,John Doe,2nd Year,4th Sem,A,CSE,85,90,88`;
                 const blob = new Blob([data], { type: 'text/csv' });
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
@@ -973,14 +1023,55 @@
                 window.URL.revokeObjectURL(url);
             };
 
-            // Download Students CSV with Average, Rank, and Branch Rank
-            window.downloadStudentsCSV = () => {
-                // Calculate averages and ranks
-                students.forEach(s => s.avgCIA = (s.cia1 + s.cia2 + s.cia3) / 3);
-                students.sort((a, b) => b.avgCIA - a.avgCIA);
+            // Populate Filter Options for CSV Download
+            window.populateFilterOptions = () => {
+                const branchFilter = document.getElementById('csv-branch-filter');
+                const semesterFilter = document.getElementById('csv-semester-filter');
+                const sectionFilter = document.getElementById('csv-section-filter');
+
+                const branches = [...new Set(students.map(s => s.branch))].sort();
+                const semesters = [...new Set(students.map(s => s.semester))].sort();
+                const sections = [...new Set(students.map(s => s.section))].sort();
+
+                branchFilter.innerHTML = '<option value="">All Branches</option>';
+                semesterFilter.innerHTML = '<option value="">All Semesters</option>';
+                sectionFilter.innerHTML = '<option value="">All Sections</option>';
+
+                branches.forEach(branch => {
+                    branchFilter.innerHTML += `<option value="${branch}">${branch}</option>`;
+                });
+                semesters.forEach(semester => {
+                    semesterFilter.innerHTML += `<option value="${semester}">${semester}</option>`;
+                });
+                sections.forEach(section => {
+                    sectionFilter.innerHTML += `<option value="${section}">${section}</option>`;
+                });
+            };
+
+            // Download Students CSV with Filters
+            window.downloadStudentsCSVWithFilters = () => {
+                const filters = {
+                    branch: document.getElementById('csv-branch-filter').value,
+                    semester: document.getElementById('csv-semester-filter').value,
+                    section: document.getElementById('csv-section-filter').value
+                };
+
+                let filtered = students.filter(s =>
+                    (!filters.branch || s.branch === filters.branch) &&
+                    (!filters.semester || s.semester === filters.semester) &&
+                    (!filters.section || s.section === filters.section)
+                );
+
+                if (filtered.length === 0) {
+                    showNotification('No students match the selected filters.', 'error');
+                    return;
+                }
+
+                filtered.forEach(s => s.avgCIA = (s.cia1 + s.cia2 + s.cia3) / 3);
+                filtered.sort((a, b) => b.avgCIA - a.avgCIA);
 
                 const branchRanks = {};
-                students.forEach((s, i) => {
+                filtered.forEach((s, i) => {
                     if (!branchRanks[s.branch]) branchRanks[s.branch] = [];
                     branchRanks[s.branch].push({ ...s, overallRank: i + 1 });
                 });
@@ -989,23 +1080,22 @@
                     branchRanks[b].forEach((s, i) => s.branchRank = i + 1);
                 });
 
-                // Prepare CSV data
                 const headers = 'USN,Name,Year,Semester,Section,Branch,CIA-1,CIA-2,CIA-3,Average CIA,Rank,Branch Rank\n';
-                const rows = students.map(s => {
+                const rows = filtered.map(s => {
                     const branchRank = branchRanks[s.branch].find(r => r.usn === s.usn).branchRank;
-                    return `${s.usn},${s.name},${s.year},${s.semester},${s.section},${s.branch},${s.cia1},${s.cia2},${s.cia3},${s.avgCIA.toFixed(2)},${students.findIndex(r => r.usn === s.usn) + 1},${branchRank}`;
+                    return `${s.usn},${s.name},${s.year},${s.semester},${s.section},${s.branch},${s.cia1},${s.cia2},${s.cia3},${s.avgCIA.toFixed(2)},${filtered.findIndex(r => r.usn === s.usn) + 1},${branchRank}`;
                 }).join('\n');
                 const csvContent = headers + rows;
 
-                // Download CSV
                 const blob = new Blob([csvContent], { type: 'text/csv' });
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'students_with_ranks.csv';
+                a.download = `students_${filters.branch || 'all'}_${filters.semester || 'all'}_${filters.section || 'all'}_ranks.csv`;
                 a.click();
                 window.URL.revokeObjectURL(url);
-                showNotification('Students CSV downloaded!', 'success');
+                showNotification('Filtered students CSV downloaded!', 'success');
+                closeModal('download-csv-modal');
             };
         });
     </script>
