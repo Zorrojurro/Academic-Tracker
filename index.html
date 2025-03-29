@@ -4,24 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Academic Excellence Tracker</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
 
         body {
-            background: #f1f5f9;
+            background: linear-gradient(135deg, #e0e7ff, #f9fafb);
             color: #1e293b;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         body.dark-mode {
-            background: #0f172a;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
             color: #e2e8f0;
         }
 
@@ -30,28 +31,36 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 240px;
+            width: 280px;
             height: 100%;
-            background: #1e3a8a;
-            padding: 20px;
+            background: linear-gradient(180deg, #1e3a8a, #2563eb);
+            padding: 40px 25px;
             color: #fff;
             transition: transform 0.3s ease;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.15);
+            border-radius: 0 20px 20px 0;
         }
 
         .sidebar.hidden {
-            transform: translateX(-240px);
+            transform: translateX(-280px);
         }
 
         .sidebar .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 30px;
+            gap: 15px;
+            margin-bottom: 50px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .sidebar .logo h1 {
-            font-size: 1.5rem;
+            font-size: 2rem;
             font-weight: 700;
+            letter-spacing: 2px;
+            background: linear-gradient(90deg, #fff, #dbeafe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .sidebar nav ul {
@@ -59,48 +68,62 @@
         }
 
         .sidebar nav ul li {
-            margin: 15px 0;
+            margin: 25px 0;
         }
 
         .sidebar nav ul li a {
             color: #dbeafe;
             text-decoration: none;
-            font-size: 1rem;
-            padding: 10px;
+            font-size: 1.15rem;
+            font-weight: 500;
+            padding: 14px 20px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            border-radius: 6px;
-            transition: background 0.3s;
+            gap: 15px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            position: relative;
         }
 
         .sidebar nav ul li a:hover, .sidebar nav ul li a.active {
-            background: #3b82f6;
-            color: #fff;
+            background: #ffffff;
+            color: #1e3a8a;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar nav ul li a i {
+            font-size: 1.3rem;
         }
 
         .sidebar-toggle {
             position: fixed;
-            top: 15px;
-            left: 260px;
-            background: #3b82f6;
+            top: 20px;
+            left: 300px;
+            background: #2563eb;
             color: #fff;
             border: none;
-            padding: 8px;
+            padding: 12px;
             border-radius: 50%;
             cursor: pointer;
             z-index: 1001;
-            transition: left 0.3s ease;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
         }
 
         .sidebar-toggle.hidden {
-            left: 15px;
+            left: 20px;
+        }
+
+        .sidebar-toggle:hover {
+            background: #1e40af;
+            transform: scale(1.1);
         }
 
         /* Main Content */
         .main-content {
-            margin-left: 240px;
-            padding: 30px;
+            margin-left: 280px;
+            padding: 50px;
             transition: margin-left 0.3s ease;
         }
 
@@ -112,94 +135,115 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 40px;
         }
 
         .header h2 {
-            font-size: 1.75rem;
-            font-weight: 700;
+            font-size: 2.2rem;
+            font-weight: 600;
             color: #1e3a8a;
+            letter-spacing: 0.5px;
         }
 
         body.dark-mode .header h2 {
-            color: #60a5fa;
+            color: #93c5fd;
         }
 
         .card {
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.05);
+            margin-bottom: 40px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
         }
 
         body.dark-mode .card {
             background: #1e293b;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
         }
 
         .card h3 {
-            font-size: 1.25rem;
+            font-size: 1.6rem;
             font-weight: 600;
             color: #1e3a8a;
-            margin-bottom: 15px;
+            margin-bottom: 25px;
         }
 
         body.dark-mode .card h3 {
-            color: #60a5fa;
+            color: #93c5fd;
         }
 
         /* Buttons */
         .btn {
-            padding: 10px 20px;
+            padding: 14px 28px;
             border: none;
-            border-radius: 6px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 0.95rem;
+            font-size: 1.1rem;
             font-weight: 500;
-            transition: background 0.3s;
+            transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
         }
 
         .btn-primary {
-            background: #1e3a8a;
+            background: linear-gradient(90deg, #1e3a8a, #3b82f6);
             color: #fff;
         }
 
         .btn-primary:hover {
-            background: #1e40af;
+            background: linear-gradient(90deg, #1e40af, #60a5fa);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.2);
         }
 
         .btn-secondary {
-            background: #64748b;
+            background: linear-gradient(90deg, #64748b, #94a3b8);
             color: #fff;
         }
 
         .btn-secondary:hover {
-            background: #475569;
+            background: linear-gradient(90deg, #475569, #64748b);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.2);
         }
 
         /* Inputs */
         input, select {
-            padding: 10px;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
+            padding: 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
             width: 100%;
-            font-size: 0.95rem;
-            margin: 8px 0;
+            font-size: 1.1rem;
+            margin: 12px 0;
+            transition: all 0.3s ease;
+            background: #f9fafb;
         }
 
         input:focus, select:focus {
-            border-color: #1e3a8a;
+            border-color: #3b82f6;
+            box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
             outline: none;
+            background: #fff;
         }
 
         body.dark-mode input, body.dark-mode select {
             background: #334155;
             color: #e2e8f0;
             border-color: #475569;
+        }
+
+        body.dark-mode input:focus, body.dark-mode select:focus {
+            background: #1e293b;
+            border-color: #60a5fa;
         }
 
         /* Modals */
@@ -210,20 +254,33 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.7);
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .modal-content {
             background: #fff;
-            padding: 25px;
-            border-radius: 10px;
-            max-width: 650px;
+            padding: 40px;
+            border-radius: 15px;
+            max-width: 90%;
             max-height: 90vh;
             overflow-y: auto;
             position: relative;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
         body.dark-mode .modal-content {
@@ -231,22 +288,24 @@
         }
 
         .modal-content h2 {
-            font-size: 1.5rem;
+            font-size: 2rem;
+            font-weight: 600;
             color: #1e3a8a;
-            margin-bottom: 15px;
+            margin-bottom: 30px;
         }
 
         body.dark-mode .modal-content h2 {
-            color: #60a5fa;
+            color: #93c5fd;
         }
 
         .close {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 1.5rem;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
             cursor: pointer;
             color: #64748b;
+            transition: color 0.3s;
         }
 
         .close:hover {
@@ -254,7 +313,7 @@
         }
 
         .modal-footer {
-            margin-top: 20px;
+            margin-top: 30px;
             text-align: right;
         }
 
@@ -262,13 +321,13 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
+            margin-top: 25px;
         }
 
         th, td {
-            padding: 10px;
+            padding: 15px 18px;
             text-align: left;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e5e7eb;
         }
 
         body.dark-mode th, body.dark-mode td {
@@ -276,22 +335,35 @@
         }
 
         th {
-            background: #f8fafc;
+            background: #f1f5f9;
             font-weight: 600;
             color: #1e3a8a;
+            font-size: 1.1rem;
         }
 
         body.dark-mode th {
             background: #334155;
-            color: #60a5fa;
+            color: #93c5fd;
+        }
+
+        td {
+            font-size: 1rem;
+        }
+
+        tr:hover {
+            background: #f9fafb;
+        }
+
+        body.dark-mode tr:hover {
+            background: #334155;
         }
 
         /* Filters */
         .filters {
             display: flex;
-            gap: 10px;
+            gap: 20px;
             flex-wrap: wrap;
-            margin-bottom: 15px;
+            margin-bottom: 25px;
         }
 
         /* Spinner and Notification */
@@ -301,8 +373,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 2rem;
-            color: #1e3a8a;
+            font-size: 3rem;
+            color: #3b82f6;
             z-index: 2000;
         }
 
@@ -312,37 +384,53 @@
 
         .notification {
             position: fixed;
-            top: 15px;
-            right: 15px;
-            padding: 10px 20px;
-            border-radius: 6px;
+            top: 20px;
+            right: 20px;
+            padding: 15px 30px;
+            border-radius: 10px;
             color: #fff;
-            font-size: 0.95rem;
+            font-size: 1.1rem;
+            font-weight: 500;
             z-index: 2000;
             display: none;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
         .notification.success {
-            background: #16a34a;
+            background: linear-gradient(90deg, #16a34a, #22c55e);
         }
 
         .notification.error {
-            background: #dc2626;
+            background: linear-gradient(90deg, #dc2626, #ef4444);
         }
 
         /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
-                transform: translateX(-240px);
+                transform: translateX(-280px);
             }
 
             .sidebar-toggle {
-                left: 15px;
+                left: 20px;
             }
 
             .main-content {
                 margin-left: 0;
-                padding: 20px;
+                padding: 30px;
+            }
+
+            .header h2 {
+                font-size: 1.8rem;
+            }
+
+            .btn {
+                padding: 12px 24px;
             }
         }
     </style>
@@ -364,7 +452,7 @@
                 <li><a href="#import" onclick="showSection('import')"><i class="fas fa-upload"></i> Import Data</a></li>
                 <li><a href="#search" onclick="showSection('search')"><i class="fas fa-search"></i> Search</a></li>
                 <li><a href="#manage" onclick="showSection('manage')"><i class="fas fa-users"></i> Manage</a></li>
-                <li><a href="#analytics" onclick="showSection('analytics')"><i class="fas fa-chart-bar"></i> Analytics</a></li>
+                <li><a href="#analytics" onclick="showSection('analytics'); loadAnalytics();"><i class="fas fa-chart-bar"></i> Analytics</a></li>
             </ul>
         </nav>
     </aside>
@@ -378,12 +466,11 @@
                 <h2>Home</h2>
                 <div>
                     <button class="btn btn-primary" id="dark-mode-toggle"><i class="fas fa-moon"></i> Dark Mode</button>
-                    <button class="btn btn-secondary" id="logout-button"><i class="fas fa-sign-out-alt"></i> Logout</button>
                 </div>
             </div>
             <div class="card">
                 <h3>Welcome to AET</h3>
-                <p>Navigate using the sidebar to import data, search students, manage records, or view analytics.</p>
+                <p>Explore student data effortlessly—import records, search students, manage details, or dive into performance analytics using the sidebar.</p>
             </div>
         </section>
 
@@ -421,6 +508,7 @@
                 <h3>Student Management</h3>
                 <button class="btn btn-primary" onclick="openModal('add-student-modal')"><i class="fas fa-user-plus"></i> Add Student</button>
                 <button class="btn btn-secondary" onclick="openModal('leaderboard-modal'); loadLeaderboard();"><i class="fas fa-trophy"></i> Leaderboard</button>
+                <button class="btn btn-primary" onclick="downloadStudentsCSV()"><i class="fas fa-download"></i> Download CSV</button>
             </div>
         </section>
 
@@ -428,6 +516,30 @@
             <div class="header">
                 <h2>Analytics</h2>
                 <button class="btn btn-secondary" onclick="showSection('home')"><i class="fas fa-arrow-left"></i> Back</button>
+            </div>
+            <div class="card">
+                <h3>Filters</h3>
+                <div class="filters">
+                    <select id="analytics-branch-filter">
+                        <option value="">All Branches</option>
+                        <option value="CSE">CSE</option>
+                        <option value="ECE">ECE</option>
+                    </select>
+                    <select id="analytics-year-filter">
+                        <option value="">All Years</option>
+                        <option value="2nd Year">2nd Year</option>
+                    </select>
+                    <select id="analytics-semester-filter">
+                        <option value="">All Semesters</option>
+                        <option value="4th Sem">4th Sem</option>
+                    </select>
+                    <select id="analytics-section-filter">
+                        <option value="">All Sections</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="loadAnalytics()">Apply Filters</button>
+                </div>
             </div>
             <div class="card">
                 <h3>Branch Performance</h3>
@@ -513,7 +625,7 @@
         </div>
 
         <div id="leaderboard-modal" class="modal">
-            <div class="modal-content">
+            <div class="modal-content" style="max-width: 95%; width: 1200px;">
                 <span class="close" onclick="closeModal('leaderboard-modal')">×</span>
                 <h2>Leaderboard</h2>
                 <div class="filters">
@@ -569,6 +681,8 @@
             { usn: "1MS21CS002", name: "Jane Smith", year: "2nd Year", semester: "4th Sem", section: "B", branch: "CSE", cia1: 92, cia2: 88, cia3: 95 }
         ];
 
+        let branchChart, topPerformersChart;
+
         document.addEventListener('DOMContentLoaded', () => {
             // Utilities
             function showNotification(message, type) {
@@ -608,11 +722,6 @@
                 document.body.classList.toggle('dark-mode');
                 const btn = document.getElementById('dark-mode-toggle');
                 btn.innerHTML = document.body.classList.contains('dark-mode') ? '<i class="fas fa-sun"></i> Light' : '<i class="fas fa-moon"></i> Dark';
-            });
-
-            // Logout
-            document.getElementById('logout-button').addEventListener('click', () => {
-                showNotification('Logged out!', 'success');
             });
 
             // Fetch Students (Optional Backend)
@@ -779,9 +888,29 @@
             document.getElementById('usn-search').addEventListener('input', loadLeaderboard);
 
             // Analytics
-            function loadAnalytics() {
+            window.loadAnalytics = () => {
+                const filters = {
+                    branch: document.getElementById('analytics-branch-filter').value,
+                    year: document.getElementById('analytics-year-filter').value,
+                    semester: document.getElementById('analytics-semester-filter').value,
+                    section: document.getElementById('analytics-section-filter').value
+                };
+
+                let filtered = students.filter(s =>
+                    (!filters.branch || s.branch === filters.branch) &&
+                    (!filters.year || s.year === filters.year) &&
+                    (!filters.semester || s.semester === filters.semester) &&
+                    (!filters.section || s.section === filters.section)
+                );
+
+                if (filtered.length === 0) {
+                    showNotification('No data matches the filters.', 'error');
+                    return;
+                }
+
+                // Branch Performance
                 const branchAverages = {};
-                students.forEach(s => {
+                filtered.forEach(s => {
                     if (!branchAverages[s.branch]) branchAverages[s.branch] = { total: 0, count: 0 };
                     branchAverages[s.branch].total += (s.cia1 + s.cia2 + s.cia3) / 3;
                     branchAverages[s.branch].count += 1;
@@ -789,21 +918,47 @@
                 const branches = Object.keys(branchAverages);
                 const avgScores = branches.map(b => branchAverages[b].total / branchAverages[b].count);
 
-                new Chart(document.getElementById('branch-performance-chart'), {
+                if (branchChart) branchChart.destroy();
+                branchChart = new Chart(document.getElementById('branch-performance-chart'), {
                     type: 'bar',
-                    data: { labels: branches, datasets: [{ label: 'Avg CIA', data: avgScores, backgroundColor: '#1e3a8a' }] },
-                    options: { scales: { y: { beginAtZero: true, max: 100 } } }
+                    data: {
+                        labels: branches,
+                        datasets: [{
+                            label: 'Avg CIA by Branch',
+                            data: avgScores,
+                            backgroundColor: '#1e3a8a',
+                            borderRadius: 5
+                        }]
+                    },
+                    options: {
+                        scales: { y: { beginAtZero: true, max: 100 } },
+                        plugins: { legend: { labels: { font: { size: 14 } } } }
+                    }
                 });
 
-                students.sort((a, b) => (b.cia1 + b.cia2 + b.cia3) / 3 - (a.cia1 + a.cia2 + a.cia3) / 3);
-                const top = students.slice(0, 5);
-                new Chart(document.getElementById('top-performers-chart'), {
+                // Top Performers
+                filtered.forEach(s => s.avgCIA = (s.cia1 + s.cia2 + s.cia3) / 3);
+                filtered.sort((a, b) => b.avgCIA - a.avgCIA);
+                const top = filtered.slice(0, 5);
+
+                if (topPerformersChart) topPerformersChart.destroy();
+                topPerformersChart = new Chart(document.getElementById('top-performers-chart'), {
                     type: 'bar',
-                    data: { labels: top.map(s => s.name), datasets: [{ label: 'Top Avg CIA', data: top.map(s => (s.cia1 + s.cia2 + s.cia3) / 3), backgroundColor: '#16a34a' }] },
-                    options: { scales: { y: { beginAtZero: true, max: 100 } } }
+                    data: {
+                        labels: top.map(s => s.name),
+                        datasets: [{
+                            label: 'Top 5 Avg CIA',
+                            data: top.map(s => s.avgCIA),
+                            backgroundColor: '#16a34a',
+                            borderRadius: 5
+                        }]
+                    },
+                    options: {
+                        scales: { y: { beginAtZero: true, max: 100 } },
+                        plugins: { legend: { labels: { font: { size: 14 } } } }
+                    }
                 });
-            }
-            loadAnalytics();
+            };
 
             // Sample CSV
             window.downloadSampleCSV = () => {
@@ -816,6 +971,41 @@
                 a.download = 'sample.csv';
                 a.click();
                 window.URL.revokeObjectURL(url);
+            };
+
+            // Download Students CSV with Average, Rank, and Branch Rank
+            window.downloadStudentsCSV = () => {
+                // Calculate averages and ranks
+                students.forEach(s => s.avgCIA = (s.cia1 + s.cia2 + s.cia3) / 3);
+                students.sort((a, b) => b.avgCIA - a.avgCIA);
+
+                const branchRanks = {};
+                students.forEach((s, i) => {
+                    if (!branchRanks[s.branch]) branchRanks[s.branch] = [];
+                    branchRanks[s.branch].push({ ...s, overallRank: i + 1 });
+                });
+                Object.keys(branchRanks).forEach(b => {
+                    branchRanks[b].sort((a, b) => b.avgCIA - a.avgCIA);
+                    branchRanks[b].forEach((s, i) => s.branchRank = i + 1);
+                });
+
+                // Prepare CSV data
+                const headers = 'USN,Name,Year,Semester,Section,Branch,CIA-1,CIA-2,CIA-3,Average CIA,Rank,Branch Rank\n';
+                const rows = students.map(s => {
+                    const branchRank = branchRanks[s.branch].find(r => r.usn === s.usn).branchRank;
+                    return `${s.usn},${s.name},${s.year},${s.semester},${s.section},${s.branch},${s.cia1},${s.cia2},${s.cia3},${s.avgCIA.toFixed(2)},${students.findIndex(r => r.usn === s.usn) + 1},${branchRank}`;
+                }).join('\n');
+                const csvContent = headers + rows;
+
+                // Download CSV
+                const blob = new Blob([csvContent], { type: 'text/csv' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'students_with_ranks.csv';
+                a.click();
+                window.URL.revokeObjectURL(url);
+                showNotification('Students CSV downloaded!', 'success');
             };
         });
     </script>
